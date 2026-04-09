@@ -1,44 +1,19 @@
 package org.iesra
 
+import org.iesra.cli.CommandLineParser
 import org.iesra.input_output.FileReader
 import org.iesra.model.LogEntry
 import org.iesra.parser.LogParser
 import org.iesra.service.GenerateReport
 import org.iesra.service.LogFilter
 import org.iesra.service.LogStatsCalculator
-import java.time.LocalDateTime
-import java.time.format.DateTimeFormatter
 
 
 fun main(args: Array<String>) {
 
     // -> PROCESAMIENTO DE COMANDO INTRODUCIDO <-
-
-    // -> PROCESAMIENTO DE ENTRADA <-
-    if (args.isEmpty()) {
-        println("Uso: <fichero> [startDate] [endDate] [outputFile]")
-        return
-    }
-
-    val filePath = args[0]
-
-    val formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss")
-
-    val startDate = try {
-        if (args.size > 1) LocalDateTime.parse(args[1], formatter) else null
-    } catch (e: Exception) {
-        println("Format Error: incorrect start date")
-        return
-    }
-
-    val endDate = try {
-        if (args.size > 2) LocalDateTime.parse(args[2], formatter) else null
-    } catch (e: Exception) {
-        println("Format Error: incorrect end date")
-        return
-    }
-
-    val outputFile = if (args.size > 3) args[3] else null
+    val cliParser = CommandLineParser()
+    val options = cliParser.parse(args) ?: return
 
     //-> INICIO DE GESTION DE LOGS <-
 
@@ -49,9 +24,9 @@ fun main(args: Array<String>) {
     val reportGenerator = GenerateReport()
 
     val lines = try {
-        fileReader.readLines(filePath)
+        fileReader.readLines(options.inputFile)
     } catch (e: Exception) {
-        println("Error: no se pudo leer el fichero")
+        println("Error: the file could not be read.")
         return
     }
 
@@ -60,35 +35,56 @@ fun main(args: Array<String>) {
     val validLogs = mutableListOf<LogEntry>()
 
     for (line in lines) {
+
         totalLines ++
 
         val parsed = parser.parse(line)
+
         if (parsed != null) {
             validLogs.add(parsed)
         }else {
-            invalidLines++
+            if (!options.ignoreInvalid) invalidLines++
         }
+
     }
 
-    // Filtrado de logs
-    val filteredLogs = filter.filterByDate(validLogs, startDate, endDate)
+    // FILTRO POR FECHA
+    var filteredLogs = filter.filterByDate(
+        validLogs,
+        options.startDate,
+        options.endDate
+    )
 
-    // Calcular Estadísticas
-    val stats = statsCalculator.calculate(filteredLogs, totalLines, invalidLines)
+    // FILTRO POR NIVEL
+    if (options.levels != null) {
+        filteredLogs = filteredLogs.filter { it.level in options.levels }
+    }
 
-    // Generar informe
-    val report = reportGenerator.generateReport(stats)
+    // ESTADÍSTICAS
+    val stats = statsCalculator.calculate(
+        filteredLogs,
+        totalLines,
+        invalidLines)
 
-    // -> SALIDA <-
-    if (outputFile != null) {
+    // SALIDA SEGÚN COMANDO
+    val output = if (options.statsOnly){
+        stats.toString()
+    }else {
+        reportGenerator.generateReport(stats)
+    }
+
+
+    // OUTPUT
+    if (options.stdout){
+        println(output)
+    }
+
+    if (options.outputFile != null){
         try {
-            java.io.File(outputFile).writeText(report)
-        } catch (e: Exception) {
-            println("Error: no se pudo escribir el fichero de salida")
+            java.io.File(options.outputFile).writeText(output)
+        }catch (e: Exception) {
+            println("Error: the output file could not be written.")
         }
-    } else {
-        println(report)
     }
-
 
 }

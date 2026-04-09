@@ -1,0 +1,11 @@
+=== INFORME DE LOGS ===
+Total líneas procesadas: 82
+Líneas válidas: 82
+Líneas inválidas: 0
+
+INFO: 61
+WARNING: 14
+ERROR: 7
+
+Primera fecha: 2025-01-15T08:00
+Última fecha: 2025-01-17T08:40

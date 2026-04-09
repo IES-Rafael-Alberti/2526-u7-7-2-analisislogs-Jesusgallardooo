@@ -1,6 +1,5 @@
 package org.iesra.cli
 
-import jdk.internal.opt.CommandLine
 import org.iesra.model.LogLevel
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
@@ -32,14 +31,21 @@ class CommandLineParser {
 
             when (args[i]) {
 
-                "-i", "--input" -> { inputFile = args.getOrNull(i++) }
+                "-i", "--input" -> {
+                    i++
+                    inputFile = args.getOrNull(i) }
 
-                "-f", "--from" -> { startDate = LocalDateTime.parse(args.getOrNull(i++), formatter) }
+                "-f", "--from" -> {
+                    i++
+                    startDate = LocalDateTime.parse(args.getOrNull(i), formatter) }
 
-                "-t", "--to" -> { endDate = LocalDateTime.parse(args.getOrNull(i++), formatter) }
+                "-t", "--to" -> {
+                    i++
+                    endDate = LocalDateTime.parse(args.getOrNull(i), formatter) }
 
                 "-l", "--level" -> {
-                    val raw = args.getOrNull(i++)
+                    i++
+                    val raw = args.getOrNull(i)
                     levels = raw?.split(',')?.map { LogLevel.valueOf(it) }?.toSet()
                 }
 
@@ -47,7 +53,9 @@ class CommandLineParser {
 
                 "-r", "--report" -> { report = true }
 
-                "-o", "--output" -> { outputFile = args.getOrNull(i++) }
+                "-o", "--output" -> {
+                    i++
+                    outputFile = args.getOrNull(i) }
 
                 "-p", "--stdout" -> { stdOut = true }
 
