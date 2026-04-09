@@ -1,5 +1,10 @@
 plugins {
+    application
     kotlin("jvm") version "2.3.0"
+}
+
+application {
+    mainClass.set("org.iesra.MainKt")
 }
 
 group = "org.iesra"

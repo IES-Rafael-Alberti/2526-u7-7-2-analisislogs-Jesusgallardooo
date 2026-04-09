@@ -8,7 +8,7 @@ import java.time.LocalDateTime
 class LogParser {
 
     private val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
-    private val regex = Regex("""\[(\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2})] (INFO|WARNING|ERROR) (.*)"""))
+    private val regex = Regex("""\[(\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2})] (INFO|WARNING|ERROR) (.*)""")
 
     fun parse(line: String): LogEntry? {
 

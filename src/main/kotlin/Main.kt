@@ -9,6 +9,7 @@ import org.iesra.service.LogStatsCalculator
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
+
 fun main(args: Array<String>) {
 
     // -> PROCESAMIENTO DE COMANDO INTRODUCIDO <-
@@ -21,7 +22,7 @@ fun main(args: Array<String>) {
 
     val filePath = args[0]
 
-    val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
+    val formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss")
 
     val startDate = try {
         if (args.size > 1) LocalDateTime.parse(args[1], formatter) else null
