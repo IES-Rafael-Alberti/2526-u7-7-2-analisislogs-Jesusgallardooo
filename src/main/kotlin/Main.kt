@@ -74,7 +74,7 @@ fun main(args: Array<String>) {
     }
 
 
-    // OUTPUT
+    // SALIDA
     if (options.stdout){
         println(output)
     }

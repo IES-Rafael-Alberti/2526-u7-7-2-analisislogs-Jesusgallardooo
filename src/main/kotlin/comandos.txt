@@ -1,0 +1,22 @@
+EJEMPLOS DE USO COMPLETO:
+
+1. Mostrar estadísticas en pantalla:
+  ./gradlew run --args="-i sample_app.log --stdout -s"
+
+2. Informe completo en pantalla:
+  ./gradlew run --args="-i sample_app.log --stdout -r"
+
+3. Guardar informe en archivo:
+  ./gradlew run --args="-i sample_app.log -o report.txt -r"
+
+4. Filtrar por fechas:
+  ./gradlew run --args="-i sample_app.log --stdout -f '2025-01-15 08:00' -t '2025-01-17 08:40'"
+
+5. Filtrar por nivel:
+  ./gradlew run --args="-i sample_app.log --stdout -l INFO,ERROR"
+
+6. Ignorar líneas inválidas:
+  ./gradlew run --args="-i sample_app.log --stdout --ignore-invalid"
+
+7. Combinando todo:
+  ./gradlew run --args="-i sample_app.log --stdout -f '2025-01-15 08:00' -t '2025-01-17 08:40' -l ERROR -r --ignore-invalid"
